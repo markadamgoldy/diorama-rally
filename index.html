@@ -1,4 +1,4 @@
-<title>Diorama Rally v159</title>
+<title>Diorama Rally v160</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap">
@@ -74,7 +74,7 @@ body.photo #phHint{display:block}
   <button id="bTint" type="button" aria-pressed="false" title="Tint each piece so the joins can be checked (T)">Show pieces</button>
   <button id="bView" type="button" title="Section view: the section here as a diorama block to orbit">Section view</button>
   <button id="b30" type="button" aria-pressed="false" title="Hold an even 30 frames a second (sharper picture, steadier motion)">30 fps</button>
-  <button id="bBuild" type="button" title="Build stamp: the Section Inspector shows the same stamp when it was built with this page">Build 87af713</button>
+  <button id="bBuild" type="button" title="Build stamp: the Section Inspector shows the same stamp when it was built with this page">Build dcdbae9</button>
   <button id="bPerf" type="button" title="Time this view with each part switched off in turn">Perf test</button>
   <button id="bStart" type="button" title="Frame times of the first 45 seconds after opening">Start log</button>
   <button id="bRew" type="button" title="Back one second">⏪</button>
@@ -962,7 +962,7 @@ function farLand(x,z){
   return h;
 }
 // the base land (Sky New): Painted Sky's oak hills, identical to its GPU terrain() near the camera
-let _blF=null;function _blOn(){if(_blF===null)_blF=(typeof location!=='undefined'&&!/[?&]base=0/.test(location.search)&&(/[?&]sky=new/.test(location.search)||(!/[?&]sky=old/.test(location.search)&&(()=>{try{return localStorage.getItem('dr_sky')==='new';}catch(e){return false;}})())))?1:0;window.__baseLand=_blF;return _blF===1;}
+let _blF=null;function _blOn(){if(_blF===null)_blF=(typeof location!=='undefined'&&!/[?&]base=0/.test(location.search)&&(/[?&]sky=new/.test(location.search)||(!/[?&]sky=old/.test(location.search)&&(()=>{try{return localStorage.getItem('dr_sky2')!=='old';}catch(e){return true;}})())))?1:0;window.__baseLand=_blF;return _blF===1;}
 let _blD=null;function _bnz(x,y){if(!_blD){_blD=new Uint8Array(65536);const r=mulberry32(9127);for(let i=0;i<65536;i++)_blD[i]=Math.floor(r()*256);}
   const ix=Math.floor(x),iy=Math.floor(y),fx=x-ix,fy=y-iy,ux=fx*fx*(3-2*fx),uy=fy*fy*(3-2*fy),x0=((ix%256)+256)%256,y0=((iy%256)+256)%256,x1=(x0+1)&255,y1=(y0+1)&255;
   const a=_blD[y0*256+x0]/255,b=_blD[y0*256+x1]/255,c=_blD[y1*256+x0]/255,d=_blD[y1*256+x1]/255,m0=a+(b-a)*ux,m1=c+(d-c)*ux;return m0+(m1-m0)*uy;}
@@ -9018,7 +9018,7 @@ vec2 terrain(vec2 p){float r=length(p-uRimC);float base,det;vec2 cq=abs(p-camera
   if(uProto>.5){float rc=length(p-cameraPosition.xz),pf=uProf;
     float lo=mix(16.*(fbm(p/2600.,oc(2600.,4))-.45),120.*(fbm(p/1400.,oc(1400.,5))-.42),clamp(pf,0.,1.));
     float mA=clamp(pf-1.,0.,1.)*(1.-clamp(pf-2.,0.,1.)),hA=clamp(pf-2.,0.,1.)*(1.-clamp(pf-3.,0.,1.)),oW=clamp(pf-3.,0.,1.);
-    if(mA>0.){float m=smoothstep(3000.,9000.,rc);if(m>0.)lo+=mA*m*(1400.*pow(ridged(p/5000.,oc(5000.,5)),1.6)+150.*fbm(p/2000.,oc(2000.,3)));}
+    if(mA>0.){float m=smoothstep(4200.,9500.,rc);if(m>0.)lo+=mA*m*(380.+250.*fbm(p/7000.,oc(7000.,2))+2300.*pow(ridged(p/5000.,oc(5000.,5)),1.25)+260.*fbm(p/1800.,oc(1800.,3)));}
     if(hA>0.){float m=smoothstep(2800.,8000.,rc);if(m>0.)lo+=hA*m*(3600.*pow(ridged(p/5200.,oc(5200.,6)),1.5)+300.*fbm(p/1800.,oc(1800.,4)));}
     float hl,hk;if(uBase>.5){hl=smx(uBaseY+lo*(1.-oW)+det*(1.-oW),uBaseY-14.,6.);hl=sinkB(p,hl);hk=smoothstep(2400.,3700.,length(p-uNearC));}
     else{hl=uFarLvl+lo*(1.-oW)+det*smoothstep(uFarJ0,uFarJ0+500.,r)*(1.-oW);hk=uJoin>.5?smoothstep(380.,800.,rc):smoothstep(500.,1600.,rc);}
@@ -9098,6 +9098,7 @@ void main(){if(length(vW.xz-uRimC)<uFarCut)discard;float dc=length(vW.xz-cameraP
     grass*=.92+.16*mix(d1*.4+d2*.6,.5,1.-nearK);
     vec3 floorC=srgb(vec3(.33,.31,.2));vec3 canopy=mix(srgb(vec3(.30,.37,.19)),srgb(vec3(.47,.36,.18)),smoothstep(.45,.75,d3))*(.8+.35*mix(d2,.5,smoothstep(300.,2500.,dc)*(uProto>.5?.55:1.)));
     alb=mix(grass,mix(floorC,canopy,far),vWood);alb=mix(alb,srgb(vec3(.52,.5,.45)),smoothstep(.42,.6,vSlope));
+    if(uProto>.5){float mk=smoothstep(110.,420.,vW.y-uFarLvl);if(mk>0.){vec3 cf=srgb(vec3(.17,.26,.17))*(.78+.4*d2),rk=srgb(vec3(.42,.42,.40))*(.85+.3*d1);alb=mix(alb,mix(cf,rk,smoothstep(.35,.62,vSlope)),mk);}}
     if(uSOn>.5){float gl=dot(grass,vec3(.3,.59,.11))/dot(srgb(vec3(.43,.52,.25)),vec3(.3,.59,.11));vec3 fG=mix(vec3(2.6,2.5,2.3),uFarGain,smoothstep(.05,.25,uKeyDir.y));vec3 g2=uSGrass*mix(vec3(gl),grass/srgb(vec3(.43,.52,.25)),.75)*fG;
       vec3 c2=mix(uSCan0,uSCan1,smoothstep(.3,.75,d3*.6+d2*.4))*(.8+.35*mix(d2,.5,smoothstep(300.,2500.,dc)*(uProto>.5?.55:1.)));
       /* close-range dressing (300 m to ~2 km): the prototype's 320 m fields read as one bare lawn on the near hills past the
@@ -9109,6 +9110,7 @@ void main(){if(length(vW.xz-uRimC)<uFarCut)discard;float dc=length(vW.xz-cameraP
       float hw=e2*step(.25,fract(h2*7.3))*(1.-smoothstep(900.,1800.,dc))*.9;
       c2*=fG;c2*=.75+.4*smoothstep(.3,.7,texture(uNoise,vW.xz/256./6.).r);alb=mix(g2,c2,max(vWood,wl));alb=mix(alb,mix(c2,g2,.5)*.62,hw*.8);/* no prototype trees stand on the far land in the game, so woods always show their canopy */alb=mix(alb,srgb(vec3(.52,.5,.45))*dot(fG,vec3(.333)),smoothstep(.55,.8,vSlope));
       alb=mix(alb,vec3(.78,.8,.84),uSSnow*smoothstep(.2,.55,n.y)*(1.-.55*max(vWood,wl)));}
+    else if(uSSnow>0.){float mh=smoothstep(110.,420.,vW.y-uFarLvl),hh=vW.y-uFarLvl+260.*d3-120.*d2,rf=smoothstep(.22,.5,vSlope+.32*(d1-.5)+.22*(d3-.5)),tl=1.-smoothstep(900.,1450.,hh);alb=mix(alb,vec3(.76,.82,.93),uSSnow*smoothstep(.35,.62,n.y)*(1.-.4*vWood)*(1.-mh));if(mh>0.){vec3 fo=srgb(vec3(.055,.08,.09))*(.7+.6*d2),ro=srgb(vec3(.30,.32,.37))*(.8+.4*d1),sn=vec3(.78,.83,.92);float sa=mix(1.-.8*rf,.22*(1.-rf)*smoothstep(.3,.7,d3),tl)*uSSnow;alb=mix(alb,mix(mix(ro,fo,tl*(1.-rf)),sn,sa),mh);}}
     if(uDbg>3.5)alb=vec3(d1,d2,d3);else if(uDbg>2.5)alb=vec3(hsh,fract(id*.13));
   } else {
     vec3 meadow=mix(srgb(vec3(.33,.41,.22)),srgb(vec3(.47,.46,.32)),smoothstep(900.,1600.,vW.y));
@@ -9131,7 +9133,7 @@ void main(){if(length(vW.xz-uRimC)<uFarCut)discard;float dc=length(vW.xz-cameraP
     vec3 deep=lightLand(srgb(vec3(.05,.09,.11)),vec3(0.,1.,0.),vW,1.);col=mix(deep,sk,fr)+horizonRad(uKeyDir)*pow(max(dot(rf,uKeyDir),0.),180.)*3.*smoothstep(-.02,.05,uKeyDir.y);}
   {vec3 v=vW-cameraPosition;float d=length(v);vec3 dir=v/max(d,1e-3);
     vec3 T=exp(-uExt*uLandHz*airT1(cameraPosition.y-uAirB,vW.y-uAirB,d));/* one gradual curve (judge rounds 1-3): never unhazed past the rim, never fully erased; each ridge further back paler */
-    if(uProto>.5){float de=d+(uLandHz-1.)*clamp(d-800.,0.,2200.)*(3000./2200.);T=exp(-uExt*airT1(cameraPosition.y-uAirB,vW.y-uAirB,de));}/* prototype air; thicker only over the first 3 km (the game sees less far than the prototype), so far mountains still show */
+    if(uProto>.5){float de=d+(uLandHz-1.)*clamp(d-800.,0.,2200.)*(3000./2200.)*(1.-.75*smoothstep(80.,700.,vW.y-uFarLvl));de*=mix(1.,.28,smoothstep(150.,900.,vW.y-uFarLvl));de*=1.-.55*uSSnow;T=exp(-uExt*airT1(cameraPosition.y-uAirB,vW.y-uAirB,de));}/* prototype air; thicker only over the first 3 km (the game sees less far than the prototype), so far mountains still show */
     if(uProto<.5){T=min(T,max(exp(-uExt*uLandHz*d),vec3(.42)));/* at least the game's own land fog at the same distance, so the rim meets it without a clear step */
     T=clamp(T,vec3(mix(.42,uHzFloor*.6,smoothstep(800.,8000.,d))),vec3(min(1.-mix(.6,.45,smoothstep(.04,.2,uKeyDir.y))*smoothstep(150.,800.,d),mix(mix(1.,.5,smoothstep(120.,320.,d)),.2,smoothstep(320.,3200.,d)))));}/* land 1-5 km melts into the horizon colour (lonely, liminal distance; a flat green field to the horizon read as a wall) */col=col*T+horizonRad(dir)*(1.-T);if(uProto>.5){vec2 vh2=normalize(dir.xz+1e-5),sh2=normalize(uKeyDir.xz+1e-5);float sg=smoothstep(.6,.95,dot(vh2,sh2))*(1.-smoothstep(.1,.35,uKeyDir.y))*smoothstep(-.02,.03,uKeyDir.y)*smoothstep(800.,5000.,d);col=mix(col,horizonRad(dir)*.6,.4*sg);}
     float vk=veilK(vW,d);if(vk>0.){vec4 cc=textureLod(uVCube,dir,0.);vec3 bh=cc.rgb+skyRad(normalize(vec3(dir.x,max(dir.y,.002),dir.z)))*(1.-cc.a);col=mix(col,bh,vk);}}
@@ -9227,7 +9229,7 @@ const pHz=pass(COMMON+`uniform float uNightK,uGExp,uGSat,uAirWarm;uniform vec3 u
    /* row 0: as the screen shows it (for the ranges); row 1: in the land's scene space (for the land's fog) */
    gl_FragColor=vec4(gl_FragCoord.y<1.?c:toScene(c),1.);}`,Object.assign({},U,{uGExp:pOut.u.uGExp,uGSat:pOut.u.uGSat,uGLift:pOut.u.uGLift,uAirWarm:{value:1},uOldSun:{value:new THREE.Vector3(1,.8,.5)},uOldCol:{value:new THREE.Vector3(.6,.7,.9)}}));
 /* ───── step 3: far land, from the land's rim (~330 m) out to ~30 km, in the sky pass behind the game's land ───── */
-const FAR={uNearHP:{value:null},uNearCP:{value:new THREE.Vector2()},uNearMix:{value:1},uBase:{value:0},uBaseY:{value:6},uSkA:{value:[0,1,2,3].map(()=>new THREE.Vector4())},uSkY:{value:new THREE.Vector4()},uJoin:{value:1},uProf:{value:1},uProto:{value:0},uRidge:{value:0},uFarLvl:{value:0},uHzT:{value:null},uSOn:{value:0},uSSnow:{value:0},uSGrass:{value:new THREE.Vector3()},uSCan0:{value:new THREE.Vector3()},uSCan1:{value:new THREE.Vector3()},uRimC:{value:new THREE.Vector2()},uFarBase:{value:0},uFarJ0:{value:300},uNearC:{value:new THREE.Vector2()},uNearH:{value:null},uFarJ1:{value:1600},uFarMtn:{value:1},uFarCut:{value:40},uFarGnd:{value:0},uFarGain:{value:new THREE.Vector3(3.6,2.8,1.8)},uLandHz:{value:4},uHzFloor:{value:.12},uAirB:{value:0},uGS:{value:1},uGK:{value:1},uGL:{value:new THREE.Vector3()},uDbg:{value:0}};
+const FAR={uNearHP:{value:null},uNearCP:{value:new THREE.Vector2()},uNearMix:{value:1},uBase:{value:0},uBaseY:{value:6},uSkA:{value:[0,1,2,3].map(()=>new THREE.Vector4())},uSkY:{value:new THREE.Vector4()},uJoin:{value:1},uProf:{value:2},uProto:{value:0},uRidge:{value:0},uFarLvl:{value:0},uHzT:{value:null},uSOn:{value:0},uSSnow:{value:0},uSGrass:{value:new THREE.Vector3()},uSCan0:{value:new THREE.Vector3()},uSCan1:{value:new THREE.Vector3()},uRimC:{value:new THREE.Vector2()},uFarBase:{value:0},uFarJ0:{value:300},uNearC:{value:new THREE.Vector2()},uNearH:{value:null},uFarJ1:{value:1600},uFarMtn:{value:1},uFarCut:{value:40},uFarGnd:{value:0},uFarGain:{value:new THREE.Vector3(3.6,2.8,1.8)},uLandHz:{value:4},uHzFloor:{value:.12},uAirB:{value:0},uGS:{value:1},uGK:{value:1},uGL:{value:new THREE.Vector3()},uDbg:{value:0}};
 const farLevels=[];{const LEVF=8,SF=8;for(let l=0;l<LEVF;l++){const mat=new THREE.ShaderMaterial({uniforms:Object.assign({uC:{value:new THREE.Vector2()},uS:{value:SF*(1<<l)},uMorph:{value:l<LEVF-1?1:0}},U,FAR),vertexShader:landVS,fragmentShader:landFS,side:THREE.DoubleSide});
   const mesh=new THREE.Mesh(gridGeo[4],mat);mesh.frustumCulled=false;scene.add(mesh);farLevels.push({mesh,mat,s:SF*(1<<l)});}}
 const _lin=h=>{const n=parseInt(h.slice(1),16);return[(n>>16&255)/255,(n>>8&255)/255,(n&255)/255].map(v=>Math.pow(v,2.2));},_lum=c=>c[0]*.3+c[1]*.59+c[2]*.11;
@@ -9262,7 +9264,7 @@ function updateFar(o){FAR.uDbg.value=window.__psDbg||0;if(window.__baseLand===1&
   const lc=o.landC||{x:cp.x,y:cp.z};FAR.uRimC.value.set(lc.x,lc.y);FAR.uFarMtn.value=window.__psFarMtn??(window.__psRanges===0?1:0);FAR.uFarGnd.value=o.hAt(lc.x,lc.y);FAR.uAirB.value=FAR.uFarGnd.value-30;
   /* world-anchored ridges (27 Nov): their floor past 3 km is the far country's mean height averaged over a minute (nearer, the game's own ground heights), so climbs and drops show as real parallax */
   {const t=performance.now()/1000,jn=window.__psProto!==0&&window.__psJoin!==0,g=(nearInit&&!jn)?FAR.uFarBase.value+6:FAR.uFarGnd.value-2;FAR.uJoin.value=jn?1:0;if(farLvl===null||Math.abs(g-farLvl)>300)farLvl=g;else farLvl+=(g-farLvl)*(1-Math.exp(-Math.min(Math.max(t-farLvlT,0),.5)/(window.__psLvlT??(window.__psProto!==0?15:60))));farLvlT=t;
-   FAR.uFarLvl.value=farLvl;const pr=window.__psProto!==0;FAR.uProto.value=pr?1:0;{const tg=window.__psProf??1;const dt=Math.min(Math.max(t-(window.__psProfT||t),0),.5);window.__psProfT=t;FAR.uProf.value+= (tg-FAR.uProf.value)*(Math.abs(tg-FAR.uProf.value)<.002?1:1-Math.exp(-dt/1.2));}FAR.uRidge.value=(pr||window.__psRidgeLand===0)?0:1;if(pr)FAR.uAirB.value=farLvl;FAR.uHzT.value=hzRT.texture;}
+   FAR.uFarLvl.value=farLvl;const pr=window.__psProto!==0;FAR.uProto.value=pr?1:0;{const tg=window.__psProf??2;const dt=Math.min(Math.max(t-(window.__psProfT||t),0),.5);window.__psProfT=t;FAR.uProf.value+= (tg-FAR.uProf.value)*(Math.abs(tg-FAR.uProf.value)<.002?1:1-Math.exp(-dt/1.2));}FAR.uRidge.value=(pr||window.__psRidgeLand===0)?0:1;if(pr)FAR.uAirB.value=farLvl;FAR.uHzT.value=hzRT.texture;}
   if(nearK===0){nearCx=lc.x;nearCz=lc.y;nearG=FAR.uFarGnd.value;}
   if(!nearInit||Math.hypot(lc.x-FAR.uNearC.value.x,lc.y-FAR.uNearC.value.y)>40||nearK>0){if(fillNear(o.hAt,nearInit?192:NA*NR))nearInit=true;}
   for(let l=0;l<farLevels.length;l++){const L=farLevels[l],s=L.s;const cx=Math.floor(cp.x/(2*s))*2*s,cz=Math.floor(cp.z/(2*s))*2*s;L.mat.uniforms.uC.value.set(cx,cz);L.cx=cx;L.cz=cz;}
@@ -9504,7 +9506,7 @@ const skyOccMat=new THREE.ShaderMaterial({depthTest:false,depthWrite:false,unifo
 const skyOccScene=new THREE.Scene();{const q=new THREE.Mesh(new THREE.PlaneGeometry(2,2),skyOccMat);q.frustumCulled=false;skyOccScene.add(q);}
 // Sky merge (step 1): Painted Sky in place of the sky field's day sky. The night sky goes in first, then Painted Sky
 // over it (stars show only through open sky), then the hazy ranges.
-window.__skyNew=/[?&]sky=new/.test(location.search)?1:/[?&]sky=old/.test(location.search)?0:(()=>{try{return localStorage.getItem('dr_sky')==='new'?1:0;}catch(e){return 0;}})();
+window.__skyNew=/[?&]sky=new/.test(location.search)?1:/[?&]sky=old/.test(location.search)?0:(()=>{try{return localStorage.getItem('dr_sky2')==='old'?0:1;}catch(e){return 1;}})();
 let _psT=null;const _psM=new THREE.Vector3(0,-1,0),_psC=new THREE.Color(),_psF=new THREE.Vector3();
 function psDraw(rt){
   if(window.__psOff){FOGU.uPsBgOn.value=0;renderer.setRenderTarget(rt);renderer.clear();return;}
@@ -9603,44 +9605,23 @@ const PERF=(()=>{
     const R=window.__rally,rd=R.dbg.renderer,sc=R.dbg.scene,LWm=window.__lw,q0=R.quality,hold=window.__hold;window.__perfOn=1;
     // 1. car frozen where the test was started (a slow spot stays in view): each part off, timed against the full view just before it
     window.__hold=true;await frames(1500);
-    const lwMats=new Set();sc.traverse(x=>{if(!x.isMesh||!x.material||!x.material.defines)return;let p=x,g=false;while(p){if(p.userData&&p.userData.grove){g=true;break;}p=p.parent;}
-      if(!g&&x.material.defines.LW&&x.material.defines.INST&&x.material!==LWm.grassCM.mat)lwMats.add(x.material);});
-    const gu=window.GROVES&&GROVES.update;let woodsVis=null;
-    const tests=[
-      ['woods (groves)',()=>{GROVES.update=()=>{};woodsVis=[];for(const h of GROVES.holders){woodsVis.push([h,h.visible]);h.visible=false;}},()=>{woodsVis.forEach(([h,v])=>h.visible=v);GROVES.update=gu;}],
-      ['game trees',()=>lwMats.forEach(m=>m.visible=false),()=>lwMats.forEach(m=>m.visible=true)],
-      ['grass',()=>LWm.grassCM.mat.visible=false,()=>LWm.grassCM.mat.visible=true],
-      ['shadow pass',()=>rd.shadowMap.autoUpdate=false,()=>rd.shadowMap.autoUpdate=true],
-      ['mountains',()=>window.__SKYF.HZ.material.visible=false,()=>window.__SKYF.HZ.material.visible=true],
-      ['car',()=>{const C=R.dbg.CAR;(C.group||C.root||C.body.parent).visible=false;},()=>{const C=R.dbg.CAR;(C.group||C.root||C.body.parent).visible=true;}],
-      ['car paint',()=>{window.__cpH=[];const C=R.dbg.CAR;(C.group||C.root||C.body.parent).traverse(x=>{if(x.isMesh&&x.visible&&x.material&&x.material.isMeshPhysicalMaterial){window.__cpH.push(x);x.visible=false;}});},()=>window.__cpH.forEach(x=>x.visible=true)],
-      ['car other parts',()=>{window.__coH=[];const C=R.dbg.CAR;(C.group||C.root||C.body.parent).traverse(x=>{if(x.isMesh&&x.visible&&!(x.material&&x.material.isMeshPhysicalMaterial)){window.__coH.push(x);x.visible=false;}});},()=>window.__coH.forEach(x=>x.visible=true)],
-      ['car shadow',()=>{window.__csH=[];const C=R.dbg.CAR;(C.group||C.root||C.body.parent).traverse(x=>{if(x.isMesh&&x.castShadow){window.__csH.push(x);x.castShadow=false;}});},()=>window.__csH.forEach(x=>x.castShadow=true)],
-      ['car beams',()=>{window.__cbH=[];const C=R.dbg.CAR;(C.group||C.root||C.body.parent).traverse(x=>{if(x.isSpotLight&&x.visible){window.__cbH.push(x);x.visible=false;}});},()=>window.__cbH.forEach(x=>x.visible=true)],
-      ['car glows',()=>{window.__cgH=[];const C=R.dbg.CAR;(C.group||C.root||C.body.parent).traverse(x=>{if(x.isSprite&&x.visible){window.__cgH.push(x);x.visible=false;}});},()=>window.__cgH.forEach(x=>x.visible=true)],
-      ['land tiles',()=>R.dbg.tiles.forEach(g=>g.visible=false),()=>R.dbg.tiles.forEach(g=>g.visible=true)],
-      ['road',()=>R.dbg.roadChunks.forEach(g=>g.visible=false),()=>R.dbg.roadChunks.forEach(g=>g.visible=true)],
-      ['road texture (new vs old)',()=>window.__roadSwap&&window.__roadSwap(1),()=>window.__roadSwap&&window.__roadSwap(0)],
-      ['sky and clouds',()=>{window.__psOff=1;window.__skyHide=[];window.__SKYF.scene.traverse(x=>{if((x.isMesh||x.isPoints)&&x!==window.__SKYF.HZ&&x.visible){window.__skyHide.push(x);x.visible=false;}});},()=>{window.__psOff=0;window.__skyHide.forEach(x=>x.visible=true);}],
-      ...(window.__skyNew?[['new sky: cloud field',()=>window.__psNoCube=1,()=>window.__psNoCube=0],['new sky: towers',()=>window.__psNoTow=1,()=>window.__psNoTow=0],['new sky: night layer',()=>window.__psNoNight=1,()=>window.__psNoNight=0],['new sky: paint-over',()=>window.__psNoOut=1,()=>window.__psNoOut=0]]:[]),
-      ['sun rays',()=>window.__noRays=1,()=>window.__noRays=0],
-      // reads negative when the noise texture (perf section 15) is the cheaper way: the old arithmetic noise costs that much more
-      ['noise as maths',()=>{if(LWm.G.uNoiseK)LWm.G.uNoiseK.value=0;},()=>{if(LWm.G.uNoiseK)LWm.G.uNoiseK.value=1;}],
-      ['haze (all of it)',()=>{if(LWm.G.uHazeOff)LWm.G.uHazeOff.value=1;},()=>{if(LWm.G.uHazeOff)LWm.G.uHazeOff.value=0;}],
-      ['far flat trees',()=>LWm.IMP.meshes.forEach(m=>m.material.visible=false),()=>LWm.IMP.meshes.forEach(m=>m.material.visible=true)],
-      ['half resolution',()=>R.setQuality(q0*.5),()=>R.setQuality(q0)],
-      // last: switching back rebuilds the far woods over a second or two
-      ['far woods flat',()=>{window.__groveBB=170;},()=>{window.__groveBB=0;}]];
-    const sv=[];let base=0;R.setQuality(q0);await frames(300);const n1=await frames(900),n2=await frames(900);
-    // each part: measured off-on-off and against the average of the two offs, using the mean frame time (medians snap to
-    // whole vsync steps on a phone, which made single parts read +-10 ms); the 'off' after one part is the next one's 'before'
-    R.setQuality(q0);await frames(300);let a=await frames(900);
-    for(const [n,on,off] of tests){say('1/3 car stopped here: '+n+'...');on();await frames(400);const b=await frames(900);off();R.setQuality(q0);await frames(400);const c=await frames(900);
-      sv.push([n,(a.mean+c.mean)/2-b.mean]);base+=c.mean/tests.length;a=c;}
-    sv.sort((a,b)=>b[1]-a[1]);
-    const FL=[];FL.push(`Parts off, ms saved (car stopped ${base.toFixed(0)} ms; nothing off ${n1.mean.toFixed(1)} and ${n2.mean.toFixed(1)}):`);
-    const cell=([n,v])=>(n.slice(0,15).padEnd(15)+(v>=0?' ':'')+v.toFixed(1)).padEnd(22);
-    for(let i=0;i<sv.length;i+=2)FL.push('  '+cell(sv[i])+(sv[i+1]?cell(sv[i+1]):''));
+    const FL=[];{const AB=async(on,off,ms=1000)=>{let a=0,b=0;for(let r=0;r<2;r++){off();await frames(300);a+=(await frames(ms)).mean;on();await frames(300);b+=(await frames(ms)).mean;}off();await frames(300);return [a/2,b/2];};
+      const rdR=rd.render,rtM=window.__rtMain&&window.__rtMain(),ns=rtM?rtM.samples:0,gu=window.GROVES&&GROVES.update;
+      const L1={leaves:[()=>{if(window.GROVES)GROVES.setDetail(.3);LWm.LODD.scale=.5;},()=>{if(window.GROVES)GROVES.setDetail(.6);LWm.LODD.scale=1;}],
+        shadow:[()=>rd.shadowMap.autoUpdate=false,()=>rd.shadowMap.autoUpdate=true],
+        sky:[()=>window.__psOff=1,()=>window.__psOff=0],
+        half:[()=>R.setQuality(q0*.5),()=>R.setQuality(q0)]};
+      const T=[['nothing drawn',()=>{rd.render=function(){};},()=>{rd.render=rdR;}],
+        ['fewer leaves (half)',...L1.leaves],['shadow map frozen',...L1.shadow],
+        ['sky off',...L1.sky],['half resolution',...L1.half],
+        ['all 4 above at once',()=>{for(const k in L1)L1[k][0]();},()=>{for(const k in L1)L1[k][1]();}]];
+      FL.push('Where the time goes (car stopped; each A/B twice, interleaved):');let base=0,n=0;const rows=[];
+      for(const [nm,on,off] of T){say('1/3 where the time goes: '+nm+'...');const [a,b]=await AB(on,off);base+=a;n++;rows.push([nm,b,b-a]);}
+      base/=n;FL.push(`  everything             ${base.toFixed(1)} ms`);
+      for(const [nm,b,d] of rows)FL.push(`  ${nm.padEnd(22)} ${b.toFixed(1)} ms (${d<=0?'':'+'}${d.toFixed(1)})`+(nm==='nothing drawn'?'  <- game code + phone overhead':''));
+      say('1/3 driving vs stopped...');const [st,dv]=await AB(()=>{window.__hold=false;},()=>{window.__hold=true;});
+      say('1/3 driving, world building paused...');window.__hold=false;const [dw,dp]=await AB(()=>{window.__noWorld=1;if(gu)GROVES.update=()=>0;},()=>{window.__noWorld=0;if(gu)GROVES.update=gu;});window.__hold=true;
+      FL.push(`  stopped ${st.toFixed(1)} ms, driving ${dv.toFixed(1)} ms; driving with world building paused ${dp.toFixed(1)} ms (vs ${dw.toFixed(1)})`);}
     window.__hold=hold;
     // 1. driving on, as played: steady frame time and hitches
     say('2/3 driving: frame times...');const dr=await frames(4000);
@@ -14194,8 +14175,8 @@ for(const b of document.querySelectorAll('.bar button'))b.addEventListener('poin
  for(const k of ['Wide hold','Assist','Tight cam','Crane cam','Tight bank','Hairpin cam','Portrait cam']){const b=tog.find(x=>x.textContent.startsWith(k+' '));if(b)sw(nm[k],b,()=>/ new$/.test(b.textContent),'New','Old',b.title);}
  { const ob=document.createElement('button');ob.type='button';ob.style.display='none';ob.title='Trees part to show the road: new follows the road through the bend on screen; old is the V108 parting';const ol=()=>{ob.textContent='Tree see-through '+(window.__occOld?'old':'new');};ol();
    ob.addEventListener('click',()=>{window.__occOld=window.__occOld?0:1;ol();toast(ob.textContent);});bar.appendChild(ob);sw('Tree see-through',ob,()=>!window.__occOld,'New','Old',ob.title); }
- { const sb=document.createElement('button');sb.type='button';sb.style.display='none';sb.title='Sky: new is Painted Sky (atmosphere, clouds, sun) with the game night sky; old is the sky field V28';const sl=()=>{sb.textContent='Sky '+(window.__skyNew?'new':'old');};sl();sb.addEventListener('click',()=>{if(!/[?&]base=0/.test(location.search)&&(window.__skyNew?0:1)!==(window.__baseLand||0)){try{_blSwitch(!window.__skyNew);}catch(e){console.warn('sky switch',e);}}try{const u=new URL(location.href);if(u.searchParams.has('sky')){u.searchParams.set('sky',window.__skyNew?'old':'new');history.replaceState(history.state,'',u.toString());}}catch(e){}window.__skyNew=window.__skyNew?0:1;try{localStorage.setItem('dr_sky',window.__skyNew?'new':'old');}catch(e){}sl();toast(window.__skyNew?'Sky: Painted Sky (new)':'Sky: sky field (old)');});bar.appendChild(sb);sw('Sky',sb,()=>!!window.__skyNew,'New','Old',sb.title); }
- { const l=document.createElement('span');l.textContent='Horizon';l.title='Sky New: the far land profile (one land, one air, one sun)';const s=document.createElement('span');s.className='seg';const P=['Flat','Hills','Mtns','High','Ocean'];const ss=P.map((n,i)=>{const e=document.createElement('span');e.textContent=n;e.addEventListener('click',()=>{window.__psProf=i;sy();toast('Horizon: '+n+(window.__skyNew?'':' (Sky New only)'));});s.append(e);return e;});const sy=()=>ss.forEach((e,i)=>e.classList.toggle('s',(window.__psProf??1)===i));sy();ab.append(l,s); }
+ { const sb=document.createElement('button');sb.type='button';sb.style.display='none';sb.title='Sky: new is Painted Sky (atmosphere, clouds, sun) with the game night sky; old is the sky field V28';const sl=()=>{sb.textContent='Sky '+(window.__skyNew?'new':'old');};sl();sb.addEventListener('click',()=>{if(!/[?&]base=0/.test(location.search)&&(window.__skyNew?0:1)!==(window.__baseLand||0)){try{_blSwitch(!window.__skyNew);}catch(e){console.warn('sky switch',e);}}try{const u=new URL(location.href);if(u.searchParams.has('sky')){u.searchParams.set('sky',window.__skyNew?'old':'new');history.replaceState(history.state,'',u.toString());}}catch(e){}window.__skyNew=window.__skyNew?0:1;try{localStorage.setItem('dr_sky2',window.__skyNew?'new':'old');}catch(e){}sl();toast(window.__skyNew?'Sky: Painted Sky (new)':'Sky: sky field (old)');});bar.appendChild(sb);sw('Sky',sb,()=>!!window.__skyNew,'New','Old',sb.title); }
+ { const l=document.createElement('span');l.textContent='Horizon';l.title='Sky New: the far land profile (one land, one air, one sun)';const s=document.createElement('span');s.className='seg';const P=['Flat','Hills','Mtns','High','Ocean'];const ss=P.map((n,i)=>{const e=document.createElement('span');e.textContent=n;e.addEventListener('click',()=>{window.__psProf=i;sy();toast('Horizon: '+n+(window.__skyNew?'':' (Sky New only)'));});s.append(e);return e;});const sy=()=>ss.forEach((e,i)=>e.classList.toggle('s',(window.__psProf??2)===i));sy();ab.append(l,s); }
  const be=$('bEngine');if(be)sw('Engine sound',be,()=>window.__engVoice?window.__engVoice()==='smooth5':/Smooth/.test(be.textContent),'Smooth','Original','Engine sound');
  {const gone=['Steering assist','Tight-bend camera','Hairpin crane','Hairpin camera','Tree see-through','Engine sound','Tight-turn bank','Portrait camera'];const kids=[...ab.children];for(let i=0;i<kids.length-1;i++){if(!kids[i].classList.contains('seg')&&gone.includes(kids[i].textContent)){kids[i].remove();kids[i+1].remove();}}}
  sec('Sound');row('bSfx','bMusic','bSong');
@@ -14833,7 +14814,7 @@ function resize(){
   camera.aspect=w/h;camera.updateProjectionMatrix();
   dustMat.uniforms.uScale.value=bh*.75;
 }
-addEventListener('resize',resize);
+addEventListener('resize',resize);window.__rtMain=()=>rt;
 
 let last=performance.now(),ft=16,qTimer=0,simTime=0;const _qWin=[];
 const kmhEl=document.getElementById('kmh'),kmEl=document.getElementById('km'),devEl=document.getElementById('dev');let devT=0;
@@ -15061,7 +15042,7 @@ function tick(dt,draw,sync){
   simTime+=dt;dayT=(dayT+dt/DAY_LEN)%1;
   const sub=2;for(let i=0;i<sub;i++)ph=physics(dt/sub);
   placeCar(dt,ph);updateCamera(dt,ph);if(window.__camFn)window.__camFn(camera,S);updateDust(dt);photo.ph=ph;}
-  P('sim');updateWorld(!!sync);P('worldBuild');
+  P('sim');if(!window.__noWorld)updateWorld(!!sync);P('worldBuild');
   if(!draw)return;
   updateLand(false);P('landUpdate');updateWeather(dt);lightAt(dayT);weatherLight(light);applyLight();P('lightApply');
   // follow sun + shadow frustum, snapped to texels to stop shimmer
